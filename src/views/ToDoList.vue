@@ -16,7 +16,7 @@
         <button @click="removeTodo(index)">×</button>
       </li>
     </ul>
-    <button v-if="todos.length > 0" @click="clearSelected"
+    <button v-if="hasSelectedTodos" @click="clearSelected"
             style="margin-top: 20px; padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer;">
       Clear
     </button>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-import {ref, watch} from 'vue';
+import {ref, watch, computed} from 'vue';
 
 export default {
   setup() {
@@ -53,9 +53,10 @@ export default {
       });
     };
 
-    watch(todos, () => {
-      allSelected.value = todos.value.every(todo => todo.selected);
-    }, {deep: true});
+    const hasSelectedTodos = computed(() => {
+      return todos.value.some(todo => todo.selected);
+    });
+
 
     function addTodo() {
       if (newTodo.value.trim() === '') return;
@@ -71,6 +72,10 @@ export default {
       todo.completed = !todo.completed;
     }
 
+    watch(todos, () => {
+      allSelected.value = todos.value.every(todo => todo.selected);
+    }, {deep: true});
+
     return {
       newTodo,
       todos,
@@ -80,7 +85,8 @@ export default {
       removeTodo,
       toggleComplete,
       allSelected,
-      toggleCheckAll
+      toggleCheckAll,
+      hasSelectedTodos
     }
   },
 
