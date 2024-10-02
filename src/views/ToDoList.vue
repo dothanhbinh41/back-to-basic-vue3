@@ -12,7 +12,10 @@
         <button @click="removeTodo(index)">×</button>
       </li>
     </ul>
-    <button @click="clearTodos" style="margin-top: 20px; padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer;">Clear All</button>
+    <button v-if="todos.length > 0" @click="clearTodos"
+            style="margin-top: 20px; padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer;">
+      Clear All
+    </button>
   </div>
 </template>
 
