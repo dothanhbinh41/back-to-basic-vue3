@@ -1,150 +1,129 @@
 <template>
   <div>
-    <div id="myDIV" class="header">
-      <h2>List language developer</h2>
-      <input type="text" id="myInput" placeholder="Title...">
-      <span class="addBtn">Add</span>
+    <h1>My To Do List</h1>
+    <div style="display: flex;">
+      <input v-model="newTodo" @keyup.enter="addTodo" placeholder="Title...">
+      <button @click="addTodo">Add</button>
     </div>
 
-    <ul id="myUL">
-      <li v-for="language in languages" :key="language.id">{{ language.name }}</li>
+    <ul>
+      <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.completed }">
+        <span @click="toggleComplete(todo)">{{ todo.text }}</span>
+        <button @click="removeTodo(index)">×</button>
+      </li>
     </ul>
-
   </div>
 </template>
 
-<script setup lang="ts">
-import {ref} from 'vue'
+<script>
+import {ref} from 'vue';
 
-const languages = ref([
-  {
-    name: 'Laravel',
-    id: 1
+export default {
+  setup() {
+    const newTodo = ref('');
+    const todos = ref([
+      {text: 'Laravel', completed: false},
+      {text: 'Vue', completed: false},
+      {text: 'React', completed: false},
+      {text: 'C#', completed: false},
+      {text: 'Python', completed: false},
+      {text: 'GoLang', completed: false}
+    ]);
+
+    function addTodo() {
+      if (newTodo.value.trim() === '') return;
+      todos.value.push({text: newTodo.value, completed: false});
+      newTodo.value = '';
+    }
+
+    function removeTodo(index) {
+      todos.value.splice(index, 1);
+    }
+
+    function toggleComplete(todo) {
+      todo.completed = !todo.completed;
+    }
+
+    return {
+      newTodo,
+      todos,
+      addTodo,
+      removeTodo,
+      toggleComplete
+    }
   },
-  {
-    name: 'Vue',
-    id: 2
-  },
-  {
-    name: 'React',
-    id: 3
-  }]
-)
+
+  mounted() {
+  }
+}
+
 </script>
 
-<style scoped>
-/* Include the padding and border in an element's total width and height */
-* {
+<style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
-/* Remove margins and padding from the list */
-ul {
+#app {
+  width: 400px;
+  margin: 50px auto;
+}
+
+h1 {
+  background-color: #f44336;
+  color: white;
+  padding: 15px;
   margin: 0;
-  padding: 0;
+  text-align: center;
 }
 
-/* Style the list items */
-ul li {
+input[type="text"] {
+  width: 75%;
+  padding: 10px;
+  border: none;
+  outline: none;
+}
+
+button {
+  width: 25%;
+  padding: 10px;
+  background-color: #ccc;
+  border: none;
   cursor: pointer;
-  position: relative;
-  padding: 12px 8px 12px 40px;
-  background: #eee;
-  font-size: 18px;
-  transition: 0.2s;
-
-  /* make the list items unselectable */
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
 }
 
-/* Set all odd list items to a different color (zebra-stripes) */
-ul li:nth-child(odd) {
-  background: #f9f9f9;
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
 }
 
-/* Darker background-color on hover */
-ul li:hover {
-  background: #ddd;
+li {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* When clicked on, add a background color and strike out text */
-ul li.checked {
-  background: #888;
-  color: #fff;
+li.completed {
+  background-color: #ddd;
   text-decoration: line-through;
 }
 
-/* Add a "checked" mark when clicked on */
-ul li.checked::before {
-  content: '';
-  position: absolute;
-  border-color: #fff;
-  border-style: solid;
-  border-width: 0 2px 2px 0;
-  top: 10px;
-  left: 16px;
-  transform: rotate(45deg);
-  height: 15px;
-  width: 7px;
-}
-
-/* Style the close button */
-.close {
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 12px 16px 12px 16px;
-}
-
-.close:hover {
-  background-color: #f44336;
-  color: white;
-}
-
-/* Style the header */
-.header {
-  background-color: #f44336;
-  padding: 30px 40px;
-  color: white;
-  text-align: center;
-}
-
-/* Clear floats after the header */
-.header:after {
-  content: "";
-  display: table;
-  clear: both;
-}
-
-/* Style the input */
-input {
-  margin: 0;
-  border: none;
-  border-radius: 0;
-  width: 75%;
-  padding: 10px;
-  float: left;
-  font-size: 16px;
-}
-
-/* Style the "Add" button */
-.addBtn {
-  padding: 10px;
-  width: 25%;
-  background: #d9d9d9;
-  color: #555;
-  float: left;
-  text-align: center;
-  font-size: 16px;
+li span {
   cursor: pointer;
-  transition: 0.3s;
-  border-radius: 0;
+  flex-grow: 1;
 }
 
-.addBtn:hover {
-  background-color: #bbb;
+li button {
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
 }
 </style>
