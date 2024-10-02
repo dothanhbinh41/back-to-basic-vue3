@@ -5,38 +5,57 @@
       <input v-model="newTodo" @keyup.enter="addTodo" placeholder="Title...">
       <button @click="addTodo">Add</button>
     </div>
-
+    <div v-if="todos.length > 0">
+      <input type="checkbox" @change="toggleCheckAll" v-model="allSelected">
+      <label for="check-all">Check All</label>
+    </div>
     <ul>
       <li v-for="(todo, index) in todos" :key="index" :class="{ completed: todo.completed }">
+        <input type="checkbox" v-model="todo.selected">
         <span @click="toggleComplete(todo)">{{ todo.text }}</span>
         <button @click="removeTodo(index)">×</button>
       </li>
     </ul>
-    <button v-if="todos.length > 0" @click="clearTodos"
+    <button v-if="todos.length > 0" @click="clearSelected"
             style="margin-top: 20px; padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer;">
-      Clear All
+      Clear
     </button>
   </div>
 </template>
 
 <script>
-import {ref} from 'vue';
+import {ref, watch} from 'vue';
 
 export default {
   setup() {
     const newTodo = ref('');
+    const allSelected = ref(false);
     const todos = ref([
-      {text: 'Laravel', completed: false},
-      {text: 'Vue', completed: false},
-      {text: 'React', completed: false},
-      {text: 'C#', completed: false},
-      {text: 'Python', completed: false},
-      {text: 'GoLang', completed: false}
+      {text: 'Laravel', completed: false, selected: false},
+      {text: 'Vue', completed: false, selected: false},
+      {text: 'React', completed: false, selected: false},
+      {text: 'C#', completed: false, selected: false},
+      {text: 'Python', completed: false, selected: false},
+      {text: 'GoLang', completed: false, selected: false}
     ]);
 
     const clearTodos = () => {
       todos.value = []; // Xóa tất cả các mục trong danh sách
     };
+
+    const clearSelected = () => {
+      todos.value = todos.value.filter(todo => !todo.selected); // Lọc ra các mục không được chọn
+    };
+
+    const toggleCheckAll = () => {
+      todos.value.forEach(todo => {
+        todo.selected = allSelected.value;
+      });
+    };
+
+    watch(todos, () => {
+      allSelected.value = todos.value.every(todo => todo.selected);
+    }, {deep: true});
 
     function addTodo() {
       if (newTodo.value.trim() === '') return;
@@ -56,9 +75,12 @@ export default {
       newTodo,
       todos,
       clearTodos,
+      clearSelected,
       addTodo,
       removeTodo,
-      toggleComplete
+      toggleComplete,
+      allSelected,
+      toggleCheckAll
     }
   },
 
@@ -134,5 +156,9 @@ li button {
   border: none;
   font-size: 20px;
   cursor: pointer;
+}
+
+input[type="checkbox"] {
+  margin-right: 5px;
 }
 </style>
