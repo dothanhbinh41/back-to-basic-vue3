@@ -12,6 +12,7 @@
         <button @click="removeTodo(index)">×</button>
       </li>
     </ul>
+    <button @click="clearTodos" style="margin-top: 20px; padding: 10px; background-color: #f44336; color: white; border: none; cursor: pointer;">Clear All</button>
   </div>
 </template>
 
@@ -30,6 +31,10 @@ export default {
       {text: 'GoLang', completed: false}
     ]);
 
+    const clearTodos = () => {
+      todos.value = []; // Xóa tất cả các mục trong danh sách
+    };
+
     function addTodo() {
       if (newTodo.value.trim() === '') return;
       todos.value.push({text: newTodo.value, completed: false});
@@ -47,6 +52,7 @@ export default {
     return {
       newTodo,
       todos,
+      clearTodos,
       addTodo,
       removeTodo,
       toggleComplete
