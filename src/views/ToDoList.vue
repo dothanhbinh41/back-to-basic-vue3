@@ -25,18 +25,18 @@
 
 <script>
 import {ref, watch, computed} from 'vue';
+import { ref, computed } from 'vue';
 
 export default {
   setup() {
     const newTodo = ref('');
-    const allSelected = ref(false);
     const todos = ref([
-      {text: 'Laravel', completed: false, selected: false},
-      {text: 'Vue', completed: false, selected: false},
-      {text: 'React', completed: false, selected: false},
-      {text: 'C#', completed: false, selected: false},
-      {text: 'Python', completed: false, selected: false},
-      {text: 'GoLang', completed: false, selected: false}
+      { text: 'Laravel', completed: false, selected: false },
+      { text: 'Vue', completed: false, selected: false },
+      { text: 'React', completed: false, selected: false },
+      { text: 'C#', completed: false, selected: false },
+      { text: 'Python', completed: false, selected: false },
+      { text: 'GoLang', completed: false, selected: false }
     ]);
 
     const clearTodos = () => {
@@ -47,9 +47,9 @@ export default {
       todos.value = todos.value.filter(todo => !todo.selected); // Lọc ra các mục không được chọn
     };
 
-    const toggleCheckAll = () => {
+    const toggleCheckAll = (value) => {
       todos.value.forEach(todo => {
-        todo.selected = allSelected.value;
+        todo.selected = value.target.checked;
       });
     };
 
@@ -57,24 +57,23 @@ export default {
       return todos.value.some(todo => todo.selected);
     });
 
+    const allSelected = computed(() => {
+      return todos.value.every(todo => todo.selected);
+    }); 
 
-    function addTodo() {
+    const addTodo = () => {
       if (newTodo.value.trim() === '') return;
-      todos.value.push({text: newTodo.value, completed: false});
+      todos.value.push({ text: newTodo.value, completed: false });
       newTodo.value = '';
     }
 
-    function removeTodo(index) {
+    const removeTodo = (index) => {
       todos.value.splice(index, 1);
     }
 
-    function toggleComplete(todo) {
+    const toggleComplete = (todo) => {
       todo.completed = !todo.completed;
-    }
-
-    watch(todos, () => {
-      allSelected.value = todos.value.every(todo => todo.selected);
-    }, {deep: true});
+    } 
 
     return {
       newTodo,
